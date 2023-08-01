@@ -1,9 +1,9 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, REQ_CHANNEL, ADMINS, URL_SHORTENR_WEBSITE, URL_SHORTNER_WEBSITE_API
+from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, REQ_CHANNEL, ADMINS, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, URL_SHORTENR_WEBSITE, URL_SHORTNER_WEBSITE_API
 from imdb import Cinemagoer 
 import asyncio
-from pyrogram.types import Message, InlineKeyboardButton
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import enums
 from typing import Union
 import random 
@@ -439,28 +439,36 @@ def remove_escapes(text: str) -> str:
     return res
 
 async def send_all(bot, userid, files, ident):
-    if AUTH_CHANNEL and not await is_subscribed(bot=bot, userid=userid):
-        try:
-            invite_link = await bot.create_chat_invite_link(int(AUTH_CHANNEL))
-        except ChatAdminRequired:
-            logger.error("Mᴀᴋᴇ sᴜʀᴇ Bᴏᴛ ɪs ᴀᴅᴍɪɴ ɪɴ Fᴏʀᴄᴇsᴜʙ ᴄʜᴀɴɴᴇʟ")
-            return
-        if ident == 'filep' or 'checksubp':
-            pre = 'checksubp'
-        else:
-            pre = 'checksub' 
-        btn = [[
-                InlineKeyboardButton("❆ Jᴏɪɴ Oᴜʀ Bᴀᴄᴋ-Uᴘ Cʜᴀɴɴᴇʟ ❆", url=invite_link.invite_link)
-            ],[
-                InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ", callback_data=f"{pre}#send_all")
-            ]]
-        await bot.send_message(
+    for file in files:
+        f_caption = file.caption
+        title = file.file_name
+        size = get_size(file.file_size)
+        if CUSTOM_FILE_CAPTION:
+            try:
+                f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
+                                                        file_size='' if size is None else size,
+                                                        file_caption='' if f_caption is None else f_caption)
+            except Exception as e:
+                print(e)
+                f_caption = f_caption
+        if f_caption is None:
+            f_caption = f"{title}"
+        await bot.send_cached_media(
             chat_id=userid,
-            text="**Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ɪɴ ᴏᴜʀ Bᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟ ɢɪᴠᴇɴ ʙᴇʟᴏᴡ sᴏ ʏᴏᴜ ᴅᴏɴ'ᴛ ɢᴇᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ғɪʟᴇ...\n\nIғ ʏᴏᴜ ᴡᴀɴᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ғɪʟᴇ, ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ '❆ Jᴏɪɴ Oᴜʀ Bᴀᴄᴋ-Uᴘ Cʜᴀɴɴᴇʟ ❆' ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴀɴᴅ ᴊᴏɪɴ ᴏᴜʀ ʙᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ '↻ Tʀʏ Aɢᴀɪɴ' ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ...\n\nTʜᴇɴ ʏᴏᴜ ᴡɪʟʟ ɢᴇᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ғɪʟᴇs...**",
-            reply_markup=InlineKeyboardMarkup(btn),
-            parse_mode=enums.ParseMode.MARKDOWN
+            file_id=file.file_id,
+            caption=f_caption,
+            protect_content=True if ident == "filep" else False,
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                    InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
+                    InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
+                    ]
+                    
+                ]
+                
             )
-        return 'fsub'
+        )
 
 async def get_shortlink(link):
 
