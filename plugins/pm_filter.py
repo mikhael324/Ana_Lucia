@@ -1158,7 +1158,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "owner_info":
             btn = [[
                     InlineKeyboardButton("⟸ Bᴀᴄᴋ", callback_data="start"),
-                    InlineKeyboardButton("▫️ Cᴏɴᴛᴀᴄᴛ▫️", url="t.me/NAZZY_FF")
+                    InlineKeyboardButton("▫️ Cᴏɴᴛᴀᴄᴛ▫️", url="https://t.me/+yc8XohZhJ84yZmY1")
                   ]]
             await client.edit_message_media(
                 query.message.chat.id, 
@@ -1500,7 +1500,7 @@ async def advantage_spell_chok(client, msg):
         logger.exception(e)
         reqst_gle = mv_rqst.replace(" ", "+")
         button = [[
-                   InlineKeyboardButton("Click Here And Wait", url="https://t.me/+GfckmB0b86oyMWU1")
+                   InlineKeyboardButton("Click Here And Wait", url="https://t.me/+yc8XohZhJ84yZmY1")
         ]]
         if NO_RESULTS_MSG:
             await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, mv_rqst)))
@@ -1517,7 +1517,7 @@ async def advantage_spell_chok(client, msg):
     if not movies:
         reqst_gle = mv_rqst.replace(" ", "+")
         button = [[
-                   InlineKeyboardButton("Click Here And Wait", url="https://t.me/+GfckmB0b86oyMWU1")
+                   InlineKeyboardButton("Click Here And Wait", url="https://t.me/+yc8XohZhJ84yZmY1")
         ]]
         if NO_RESULTS_MSG:
             await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, mv_rqst)))
